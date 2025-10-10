@@ -4,11 +4,12 @@
 # 通用配置
 bindPort: 7000
 
-# 管理界面配置
-dashboard:
-  port: 7500
-  user: "admin"
-  password: "admin123"
+# 管理界面端口
+dashboardPort: 7500
+
+# 管理界面用户名和密码
+dashboardUser: "admin"
+dashboardPwd: "admin123"
 
 # Token用于客户端连接认证（请修改为复杂的密码）
 token: "Wsygb!23"
