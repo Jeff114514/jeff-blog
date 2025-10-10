@@ -114,16 +114,16 @@ sudo firewall-cmd --reload
 ### 3. 修改配置文件
 
 编辑 `frp/frps.yml`：
-```ini
+```yaml
 # 修改认证令牌（重要！）
-token = your_secure_token_here
+token = "your_secure_token_here"
 
 # 修改管理界面密码
-dashboard_user = jeff
-dashboard_pwd = Jeff@2024!Labyrinth
+dashboard_user = "admin"
+dashboard_pwd = "admin123"
 
 # 修改域名（可选）
-subdomain_host = xn--uist3gr45a2a0370ahjg.xn--viqt41cw7bz9i.icu
+subdomain_host = "xn--uist3gr45a2a0370ahjg.xn--viqt41cw7bz9i.icu"
 ```
 
 编辑 `nginx/blog.conf`：
@@ -221,8 +221,7 @@ docker-compose up -d
 ### FRP配置详解
 
 `frp/frps.yml` 主要配置项：
-```ini
-[common]
+```yaml
 # FRP服务端监听端口
 bind_port = 7000
 
@@ -230,14 +229,14 @@ bind_port = 7000
 dashboard_port = 7500
 
 # 认证令牌（客户端必须一致）
-token = your_secure_token
+token = "your_secure_token"
 
 # 管理界面认证
-dashboard_user = jeff
-dashboard_pwd = Jeff@2024!Labyrinth
+dashboard_user = "admin"
+dashboard_pwd = "admin123"
 
 # 域名（用于子域名代理）
-subdomain_host = xn--uist3gr45a2a0370ahjg.xn--viqt41cw7bz9i.icu
+subdomain_host = "xn--uist3gr45a2a0370ahjg.xn--viqt41cw7bz9i.icu"
 ```
 
 ### Nginx配置详解
