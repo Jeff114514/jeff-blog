@@ -1,51 +1,54 @@
 # FRP 客户端配置文件
 # 运行在本地电脑上
 
-# 通用配置
-serverAddr: "47.108.174.42"  # 替换为你的阿里云服务器IP
+# FRPS 服务端
+serverAddr: "47.108.174.42"
 serverPort: 7000
 
-# Token（必须与服务端一致）
-token: "Wsygb!23"
+# 认证配置
+auth:
+  method: token
+  token: "Wsygb!23"
 
 # 日志配置
-logFile: "./frpc.log"
-logLevel: "info"
-logMaxDays: 3
+log:
+  to: "./frpc.log"
+  level: info
+  maxDays: 3
+  disablePrintColor: false
 
-# 心跳配置
-heartbeatInterval: 30
-heartbeatTimeout: 90
-
-# TCP多路复用
-tcpMux: true
+# 心跳/连接
+transport:
+  tcpMux: true
+  heartbeatInterval: 30
+  heartbeatTimeout: 90
 
 # 代理配置
 proxies:
   # 代理Spring Boot后端服务
   - name: "blog-backend"
-    type: "tcp"
+    type: tcp
     localIP: "127.0.0.1"
     localPort: 8080
     remotePort: 8080
 
   # 代理Vue前端服务
   - name: "blog-frontend"
-    type: "tcp"
+    type: tcp
     localIP: "127.0.0.1"
     localPort: 3000
     remotePort: 3000
 
   # 代理vLLM AI服务
   - name: "ai-service"
-    type: "tcp"
+    type: tcp
     localIP: "127.0.0.1"
     localPort: 8000
     remotePort: 8000
 
-  # 代理MySQL数据库（可选，用于远程访问数据库）
+  # 代理MySQL数据库（可选）
   - name: "mysql"
-    type: "tcp"
+    type: tcp
     localIP: "127.0.0.1"
     localPort: 3306
     remotePort: 33060
