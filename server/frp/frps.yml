@@ -2,47 +2,45 @@
 # 运行在阿里云服务器上
 
 # 通用配置
-bind_port: 7000
+bindPort: 7000
 
 # 管理界面端口
-dashboard_port: 7500
+dashboardPort: 7500
 
 # 管理界面用户名和密码
-dashboard_user: "admin"
-dashboard_pwd: "admin123"
+dashboardUser: "admin"
+dashboardPwd: "admin123"
 
 # Token用于客户端连接认证（请修改为复杂的密码）
 token: "Wsygb!23"
 
 # 最大连接池大小
-max_pool_count: 50
+maxPoolCount: 50
 
 # 日志配置
-log:
-  file: "/var/log/frp/frps.log"
-  level: "info"
-  max_days: 3
+logFile: "/var/log/frp/frps.log"
+logLevel: "info"
+logMaxDays: 3
 
 # HTTP/HTTPS端口（用于代理web服务）
-vhost_http_port: 8080
-vhost_https_port: 8443
+vhostHttpPort: 8080
+vhostHttpsPort: 8443
 
 # 子域名配置
-subdomain_host: "xn--uist3gr45a2a0370ahjg.xn--viqt41cw7bz9i.icu"
+subdomainHost: "xn--uist3gr45a2a0370ahjg.xn--viqt41cw7bz9i.icu"
 
 # 心跳配置
-heartbeat_timeout: 90
+heartbeatTimeout: 90
 
-# 允许的端口范围
-allow_ports:
+# 允许的端口范围（新格式）
+allowPorts:
   - start: 2000
     end: 3000
   - start: 5000
     end: 6000
   - start: 8000
     end: 9000
-  - start: 11434
-    end: 11434
+  - single: 11434
 
 # TCP多路复用
-tcp_mux: true
+tcpMux: true

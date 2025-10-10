@@ -2,51 +2,50 @@
 # 运行在本地电脑上
 
 # 通用配置
-server_addr: "47.108.174.42"  # 替换为你的阿里云服务器IP
-server_port: 7000
+serverAddr: "47.108.174.42"  # 替换为你的阿里云服务器IP
+serverPort: 7000
 
 # Token（必须与服务端一致）
 token: "Wsygb!23"
 
 # 日志配置
-log:
-  file: "./frpc.log"
-  level: "info"
-  max_days: 3
+logFile: "./frpc.log"
+logLevel: "info"
+logMaxDays: 3
 
 # 心跳配置
-heartbeat_interval: 30
-heartbeat_timeout: 90
+heartbeatInterval: 30
+heartbeatTimeout: 90
 
 # TCP多路复用
-tcp_mux: true
+tcpMux: true
 
 # 代理配置
 proxies:
   # 代理Spring Boot后端服务
   - name: "blog-backend"
     type: "tcp"
-    local_ip: "127.0.0.1"
-    local_port: 8080
-    remote_port: 8080
+    localIP: "127.0.0.1"
+    localPort: 8080
+    remotePort: 8080
 
   # 代理Vue前端服务
   - name: "blog-frontend"
     type: "tcp"
-    local_ip: "127.0.0.1"
-    local_port: 3000
-    remote_port: 3000
+    localIP: "127.0.0.1"
+    localPort: 3000
+    remotePort: 3000
 
   # 代理vLLM AI服务
   - name: "ai-service"
     type: "tcp"
-    local_ip: "127.0.0.1"
-    local_port: 8000
-    remote_port: 8000
+    localIP: "127.0.0.1"
+    localPort: 8000
+    remotePort: 8000
 
   # 代理MySQL数据库（可选，用于远程访问数据库）
   - name: "mysql"
     type: "tcp"
-    local_ip: "127.0.0.1"
-    local_port: 3306
-    remote_port: 33060
+    localIP: "127.0.0.1"
+    localPort: 3306
+    remotePort: 33060
