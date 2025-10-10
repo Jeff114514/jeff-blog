@@ -75,7 +75,7 @@ fi
 
 # 统一的FRP管理界面可达性检查：
 # - 如配置了BasicAuth则携带认证
-# - HTTP 200（已认证）或 401（需要认证）都视为“可访问”（服务正常对外响应）
+# - HTTP 2xx / 3xx 或 401（需要认证）都视为“可访问”（服务正常对外响应/重定向）
 check_frp_admin_access() {
     local CURL_AUTH_ARGS=()
     if [ -n "$FRP_USER" ] && [ -n "$FRP_PASS" ]; then
@@ -92,7 +92,7 @@ if docker ps --filter "name=frps" --filter "status=running" | grep -q frps; then
 
     # 检查FRP管理界面
     HTTP_CODE=$(check_frp_admin_access)
-    if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "401" ]; then
+    if [[ "$HTTP_CODE" =~ ^2 ]] || [[ "$HTTP_CODE" =~ ^3 ]] || [ "$HTTP_CODE" = "401" ]; then
         echo "✅ FRP管理界面可访问：http://$SERVER_IP:7500 (HTTP $HTTP_CODE)"
     else
         echo "⚠️  FRP管理界面无法访问（HTTP $HTTP_CODE）"
@@ -171,7 +171,7 @@ fi
 
 # 测试本地网络服务
 HTTP_CODE_LOCAL=$(check_frp_admin_access)
-if [ "$HTTP_CODE_LOCAL" = "200" ] || [ "$HTTP_CODE_LOCAL" = "401" ]; then
+if [[ "$HTTP_CODE_LOCAL" =~ ^2 ]] || [[ "$HTTP_CODE_LOCAL" =~ ^3 ]] || [ "$HTTP_CODE_LOCAL" = "401" ]; then
     echo "✅ 本地FRP管理界面可访问"
 else
     echo "❌ 本地FRP管理界面无法访问"
@@ -208,9 +208,11 @@ echo "================"
 ISSUES=0
 WARNINGS=0
 
-# 检查关键问题（FRP管理界面：200或401视为正常）
+# 检查关键问题（FRP管理界面：2xx/3xx/401 视为正常）
 HTTP_CODE_REPORT=$(check_frp_admin_access)
-if [ "$HTTP_CODE_REPORT" != "200" ] && [ "$HTTP_CODE_REPORT" != "401" ]; then
+if [[ "$HTTP_CODE_REPORT" =~ ^2 ]] || [[ "$HTTP_CODE_REPORT" =~ ^3 ]] || [ "$HTTP_CODE_REPORT" = "401" ]; then
+    : # 正常，无操作
+else
     echo "❌ 严重问题：FRP服务端无法访问（HTTP $HTTP_CODE_REPORT）"
     ((ISSUES++))
 fi
