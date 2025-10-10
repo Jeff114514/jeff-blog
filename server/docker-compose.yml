@@ -15,7 +15,7 @@ services:
       - "8080:8080"      # HTTP代理端口
       - "8443:8443"      # HTTPS代理端口
     volumes:
-      - ./frp/frps.yaml:/etc/frp/frps.yaml
+      - ./frp/frps.yml:/etc/frp/frps.yaml:ro
       - frps-logs:/var/log/frp
     networks:
       - blog-network
