@@ -56,6 +56,13 @@ fi
 
 echo "✅ 配置文件检查通过"
 
+# 获取服务器IP（带错误处理）
+SERVER_IP=$(curl -s http://ipinfo.io/ip 2>/dev/null || curl -s http://ipecho.net/plain 2>/dev/null || hostname -I | awk '{print $1}' 2>/dev/null)
+if [ -z "$SERVER_IP" ]; then
+    echo "⚠️  警告：无法获取服务器公网IP，将使用默认值"
+    SERVER_IP="your-server-ip"
+fi
+
 # 检查防火墙状态
 if command -v ufw &> /dev/null; then
     echo "🔥 检查防火墙状态..."
@@ -93,24 +100,47 @@ fi
 echo "⏳ 等待服务启动..."
 sleep 5
 
+# 读取FRP管理界面认证信息（如果存在）
+FRPS_CONFIG="./frp/frps.yml"
+FRP_USER=""
+FRP_PASS=""
+if [ -f "$FRPS_CONFIG" ]; then
+    FRP_USER=$(awk 'f&&/user:/ {gsub(/"|\x27/, ""); print $2; exit} /^webServer:/ {f=1}' "$FRPS_CONFIG" 2>/dev/null)
+    FRP_PASS=$(awk 'f&&/password:/ {gsub(/"|\x27/, ""); print $2; exit} /^webServer:/ {f=1}' "$FRPS_CONFIG" 2>/dev/null)
+fi
+
+# 统一的FRP管理界面可达性检查：
+# - 如配置了BasicAuth则携带认证
+# - HTTP 2xx / 3xx 或 401（需要认证）都视为"可访问"（服务正常对外响应/重定向）
+check_frp_admin_access() {
+    local CURL_AUTH_ARGS=()
+    if [ -n "$FRP_USER" ] && [ -n "$FRP_PASS" ]; then
+        CURL_AUTH_ARGS=(-u "$FRP_USER:$FRP_PASS")
+    fi
+    local CODE
+    CODE=$(curl -s -o /dev/null -w "%{http_code}" "${CURL_AUTH_ARGS[@]}" "http://localhost:7500" || echo "000")
+    echo "$CODE"
+}
+
 # 验证服务状态
 echo ""
 echo "📊 服务状态检查："
 echo "=================="
 
 # 检查FRP服务端
-if curl -f http://localhost:7500 > /dev/null 2>&1; then
-    echo "✅ FRP服务端运行正常"
-    echo "   管理界面：http://$(curl -s http://ipinfo.io/ip):7500"
+HTTP_CODE=$(check_frp_admin_access)
+if [[ "$HTTP_CODE" =~ ^2 ]] || [[ "$HTTP_CODE" =~ ^3 ]] || [ "$HTTP_CODE" = "401" ]; then
+    echo "✅ FRP服务端运行正常 (HTTP $HTTP_CODE)"
+    echo "   管理界面：http://$SERVER_IP:7500"
 else
-    echo "❌ FRP服务端启动失败"
+    echo "❌ FRP服务端启动失败 (HTTP $HTTP_CODE)"
     echo "查看日志：docker-compose logs frps"
 fi
 
 # 检查Nginx
 if curl -f -I http://localhost > /dev/null 2>&1; then
     echo "✅ Nginx反向代理运行正常"
-    echo "   HTTP服务：http://$(curl -s http://ipinfo.io/ip)"
+    echo "   HTTP服务：http://$SERVER_IP"
 else
     echo "❌ Nginx启动失败"
     echo "查看日志：docker-compose logs nginx"
@@ -135,7 +165,6 @@ echo "=========================="
 
 echo ""
 echo "📋 服务器信息："
-SERVER_IP=$(curl -s http://ipinfo.io/ip)
 echo "公网IP：$SERVER_IP"
 echo "域名：请配置为指向 $SERVER_IP"
 
