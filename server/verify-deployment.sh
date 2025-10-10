@@ -64,15 +64,38 @@ cd "$(dirname "${BASH_SOURCE[0]}")" || {
     exit 1
 }
 
+# 读取FRP管理界面认证信息（如果存在）
+FRPS_CONFIG="./frp/frps.yml"
+FRP_USER=""
+FRP_PASS=""
+if [ -f "$FRPS_CONFIG" ]; then
+    FRP_USER=$(awk 'f&&/user:/ {gsub(/"|\x27/, ""); print $2; exit} /^webServer:/ {f=1}' "$FRPS_CONFIG" 2>/dev/null)
+    FRP_PASS=$(awk 'f&&/password:/ {gsub(/"|\x27/, ""); print $2; exit} /^webServer:/ {f=1}' "$FRPS_CONFIG" 2>/dev/null)
+fi
+
+# 统一的FRP管理界面可达性检查：
+# - 如配置了BasicAuth则携带认证
+# - HTTP 200（已认证）或 401（需要认证）都视为“可访问”（服务正常对外响应）
+check_frp_admin_access() {
+    local CURL_AUTH_ARGS=()
+    if [ -n "$FRP_USER" ] && [ -n "$FRP_PASS" ]; then
+        CURL_AUTH_ARGS=(-u "$FRP_USER:$FRP_PASS")
+    fi
+    local CODE
+    CODE=$(curl -s -o /dev/null -w "%{http_code}" "${CURL_AUTH_ARGS[@]}" "http://localhost:7500" || echo "000")
+    echo "$CODE"
+}
+
 # 检查FRP服务端容器
 if docker ps --filter "name=frps" --filter "status=running" | grep -q frps; then
     echo "✅ FRP服务端容器运行正常"
 
     # 检查FRP管理界面
-    if curl -f -s "http://localhost:7500" > /dev/null; then
-        echo "✅ FRP管理界面可访问：http://$SERVER_IP:7500"
+    HTTP_CODE=$(check_frp_admin_access)
+    if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "401" ]; then
+        echo "✅ FRP管理界面可访问：http://$SERVER_IP:7500 (HTTP $HTTP_CODE)"
     else
-        echo "⚠️  FRP管理界面无法访问"
+        echo "⚠️  FRP管理界面无法访问（HTTP $HTTP_CODE）"
     fi
 else
     echo "❌ FRP服务端容器未运行"
@@ -147,7 +170,8 @@ else
 fi
 
 # 测试本地网络服务
-if curl -f -s "http://localhost:7500" > /dev/null; then
+HTTP_CODE_LOCAL=$(check_frp_admin_access)
+if [ "$HTTP_CODE_LOCAL" = "200" ] || [ "$HTTP_CODE_LOCAL" = "401" ]; then
     echo "✅ 本地FRP管理界面可访问"
 else
     echo "❌ 本地FRP管理界面无法访问"
@@ -184,9 +208,10 @@ echo "================"
 ISSUES=0
 WARNINGS=0
 
-# 检查关键问题
-if ! curl -f "http://localhost:7500" > /dev/null 2>&1; then
-    echo "❌ 严重问题：FRP服务端无法访问"
+# 检查关键问题（FRP管理界面：200或401视为正常）
+HTTP_CODE_REPORT=$(check_frp_admin_access)
+if [ "$HTTP_CODE_REPORT" != "200" ] && [ "$HTTP_CODE_REPORT" != "401" ]; then
+    echo "❌ 严重问题：FRP服务端无法访问（HTTP $HTTP_CODE_REPORT）"
     ((ISSUES++))
 fi
 
