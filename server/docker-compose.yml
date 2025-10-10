@@ -1,0 +1,50 @@
+# 阿里云服务器端 Docker Compose 配置
+# 用于运行FRP服务端和Nginx反向代理
+
+version: '3.8'
+
+services:
+  # FRP服务端
+  frps:
+    image: snowdreamtech/frps:latest
+    container_name: frps
+    restart: always
+    ports:
+      - "7000:7000"      # FRP主服务端口
+      - "7500:7500"      # FRP管理界面端口
+      - "8080:8080"      # HTTP代理端口
+      - "8443:8443"      # HTTPS代理端口
+    volumes:
+      - ./frp/frps.ini:/etc/frp/frps.ini
+      - frps-logs:/var/log/frp
+    networks:
+      - blog-network
+    command: -c /etc/frp/frps.ini
+
+  # Nginx反向代理
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/blog.conf:/etc/nginx/conf.d/blog.conf:ro
+      - nginx-logs:/var/log/nginx
+      - ./nginx/ssl:/etc/nginx/ssl:ro  # SSL证书目录（可选）
+    networks:
+      - blog-network
+    depends_on:
+      - frps
+
+volumes:
+  frps-logs:
+    driver: local
+  nginx-logs:
+    driver: local
+
+networks:
+  blog-network:
+    driver: bridge
+

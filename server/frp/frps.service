@@ -1,0 +1,19 @@
+# FRP服务端Systemd服务配置文件
+# 文件位置: /etc/systemd/system/frps.service
+
+[Unit]
+Description=FRP Server Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Restart=on-failure
+RestartSec=5s
+ExecStart=/usr/local/bin/frps -c /etc/frp/frps.ini
+ExecReload=/bin/kill -HUP $MAINPID
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+

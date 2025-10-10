@@ -1,0 +1,25 @@
+{
+  "model_config": {
+    "model": "/models/Qwen3-4B-I-chat",
+    "tokenizer": "/models/Qwen3-4B-I-chat",
+    "trust_remote_code": true,
+    "max_model_len": 4096,
+    "gpu_memory_utilization": 0.8,
+    "tensor_parallel_size": 1,
+    "max_num_seqs": 128,
+    "max_num_batched_tokens": 4096,
+    "swap_space": 4,
+    "sliding_window": null,
+    "pipeline_parallel_size": 1,
+    "enable_prefix_caching": false,
+    "cpu_offload_gb": 0,
+    "enforce_eager": false,
+    "max_context_len_to_capture": 8192,
+    "disable_sliding_window": false,
+    "skip_tokenizer_init": false,
+    "served_model_name": "Qwen3-4B-I-chat"
+  },
+  "lora_config": null,
+  "prompt_adapter_config": null,
+  "additional_config": null
+}

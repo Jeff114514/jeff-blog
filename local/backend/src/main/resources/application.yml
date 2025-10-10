@@ -1,0 +1,75 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: blog-backend
+  
+  datasource:
+    url: jdbc:mysql://localhost:3306/blog_db?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: your_password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      auto-commit: true
+      idle-timeout: 30000
+      pool-name: BlogHikariCP
+      max-lifetime: 1800000
+      connection-timeout: 30000
+  
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+      enabled: true
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  mapper-locations: classpath:mapper/*.xml
+
+# JWT配置
+jwt:
+  secret: blog_secret_key_change_in_production
+  expire: 86400000  # 24小时，单位毫秒
+
+# AI服务配置（vLLM，本地模型）
+ai:
+  vllm:
+    url: http://localhost:8000/v1/chat/completions
+    model: Qwen3-4B-I-chat
+    api-key: your-api-key-here
+    timeout: 180000  # 3分钟超时
+    max-tokens: 2048
+    temperature: 0.7
+    top-p: 0.9
+
+# 支持的模型配置（本地模型）
+  models:
+    default: Qwen3-4B-I-chat
+    supported: Qwen3-4B-I-chat:2048:0.7:0.9
+
+# 日志配置
+logging:
+  level:
+    com.blog: debug
+    org.springframework.web: info
+    org.mybatis: debug
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/blog-backend.log
+    max-size: 10MB
+    max-history: 30
