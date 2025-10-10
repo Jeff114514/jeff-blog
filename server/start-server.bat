@@ -43,7 +43,7 @@ if "%SERVER_DIR:~-1%"=="\" set "SERVER_DIR=%SERVER_DIR:~0,-1%"
 REM 检查配置文件是否存在
 set "COMPOSE_FILE=%SERVER_DIR%\docker-compose.yml"
 set "NGINX_CONFIG=%SERVER_DIR%\nginx\blog.conf"
-set "FRP_CONFIG=%SERVER_DIR%\frp\frps.ini"
+set "FRP_CONFIG=%SERVER_DIR%\frp\frps.yml"
 
 if not exist "%COMPOSE_FILE%" (
     echo ❌ 错误：找不到docker-compose.yml文件：%COMPOSE_FILE%

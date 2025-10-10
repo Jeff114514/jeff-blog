@@ -41,7 +41,7 @@ server/
 ├── nginx/                    # Nginx反向代理配置
 │   └── blog.conf             # 反向代理配置文件
 ├── frp/                     # FRP内网穿透服务端配置
-│   ├── frps.ini             # FRP服务端配置文件
+│   ├── frps.yml             # FRP服务端配置文件
 │   └── frps.service         # FRP系统服务配置
 ├── start-server.sh          # 服务器启动脚本（Linux）
 ├── start-server.bat         # 服务器启动脚本（Windows）
@@ -113,23 +113,23 @@ sudo firewall-cmd --reload
 
 ### 3. 修改配置文件
 
-编辑 `frp/frps.ini`：
+编辑 `frp/frps.yml`：
 ```ini
 # 修改认证令牌（重要！）
 token = your_secure_token_here
 
 # 修改管理界面密码
-dashboard_user = admin
-dashboard_pwd = your_admin_password
+dashboard_user = jeff
+dashboard_pwd = Jeff@2024!Labyrinth
 
 # 修改域名（可选）
-subdomain_host = your-domain.com
+subdomain_host = xn--uist3gr45a2a0370ahjg.xn--viqt41cw7bz9i.icu
 ```
 
 编辑 `nginx/blog.conf`：
 ```nginx
 # 修改域名
-server_name your-domain.com;
+server_name xn--uist3gr45a2a0370ahjg.xn--viqt41cw7bz9i.icu;
 ```
 
 ### 4. 启动服务
@@ -220,7 +220,7 @@ docker-compose up -d
 
 ### FRP配置详解
 
-`frp/frps.ini` 主要配置项：
+`frp/frps.yml` 主要配置项：
 ```ini
 [common]
 # FRP服务端监听端口
@@ -233,11 +233,11 @@ dashboard_port = 7500
 token = your_secure_token
 
 # 管理界面认证
-dashboard_user = admin
-dashboard_pwd = your_password
+dashboard_user = jeff
+dashboard_pwd = Jeff@2024!Labyrinth
 
 # 域名（用于子域名代理）
-subdomain_host = your-domain.com
+subdomain_host = xn--uist3gr45a2a0370ahjg.xn--viqt41cw7bz9i.icu
 ```
 
 ### Nginx配置详解
@@ -297,7 +297,7 @@ docker-compose exec nginx nginx -t
 docker-compose logs nginx
 
 # 测试代理服务
-curl -H "Host: your-domain.com" http://localhost
+curl -H "Host: xn--uist3gr45a2a0370ahjg.xn--viqt41cw7bz9i.icu" http://localhost
 ```
 
 #### 4. 端口被占用

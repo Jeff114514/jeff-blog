@@ -97,10 +97,10 @@ services:
     container_name: frpc
     restart: always
     volumes:
-      - ./frp/frpc.ini:/etc/frp/frpc.ini
+      - ./frp/frpc.yml:/etc/frp/frpc.yml
     networks:
       - blog-network
-    command: -c /etc/frp/frpc.ini
+    command: -c /etc/frp/frpc.yml
 
 volumes:
   mysql-data:

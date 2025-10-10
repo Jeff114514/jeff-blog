@@ -37,7 +37,7 @@ echo "✅ Docker环境检查通过"
 SERVER_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 COMPOSE_FILE="$SERVER_DIR/docker-compose.yml"
 NGINX_CONFIG="$SERVER_DIR/nginx/blog.conf"
-FRP_CONFIG="$SERVER_DIR/frp/frps.ini"
+FRP_CONFIG="$SERVER_DIR/frp/frps.yml"
 
 if [ ! -f "$COMPOSE_FILE" ]; then
     echo "❌ 错误：找不到docker-compose.yml文件：$COMPOSE_FILE"

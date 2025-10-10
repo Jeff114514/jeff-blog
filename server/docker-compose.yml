@@ -15,11 +15,11 @@ services:
       - "8080:8080"      # HTTP代理端口
       - "8443:8443"      # HTTPS代理端口
     volumes:
-      - ./frp/frps.ini:/etc/frp/frps.ini
+      - ./frp/frps.yml:/etc/frp/frps.yml
       - frps-logs:/var/log/frp
     networks:
       - blog-network
-    command: -c /etc/frp/frps.ini
+    command: -c /etc/frp/frps.yml
 
   # Nginx反向代理
   nginx:

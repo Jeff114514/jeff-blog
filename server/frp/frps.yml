@@ -1,0 +1,47 @@
+# FRP 服务端配置文件
+# 运行在阿里云服务器上
+
+# 通用配置
+bindPort: 7000
+
+# 管理界面配置
+dashboard:
+  port: 7500
+  user: "admin"
+  password: "admin123"
+
+# Token用于客户端连接认证（请修改为复杂的密码）
+token: "Wsygb!23"
+
+# 最大连接池大小
+maxPoolCount: 50
+
+# 日志配置
+log:
+  file: "/var/log/frp/frps.log"
+  level: "info"
+  maxDays: 3
+
+# HTTP/HTTPS端口（用于代理web服务）
+vhostHttpPort: 8080
+vhostHttpsPort: 8443
+
+# 子域名配置
+subdomainHost: "xn--uist3gr45a2a0370ahjg.xn--viqt41cw7bz9i.icu"
+
+# 心跳配置
+heartbeatTimeout: 90
+
+# 允许的端口范围
+allowPorts:
+  - start: 2000
+    end: 3000
+  - start: 5000
+    end: 6000
+  - start: 8000
+    end: 9000
+  - start: 11434
+    end: 11434
+
+# TCP多路复用
+tcpMux: true

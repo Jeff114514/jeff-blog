@@ -166,7 +166,7 @@ ssh root@your_server_ip
 cd /root/blog-server
 
 # 修改配置
-vim frp/frps.ini  # 修改token
+vim frp/frps.yml  # 修改token
 vim nginx/blog.conf  # 修改域名
 
 # 启动服务
@@ -185,7 +185,7 @@ docker-compose ps
 cd local
 
 # 修改配置
-# 编辑 frp/frpc.ini，修改server_addr和token
+# 编辑 frp/frpc.yml，修改server_addr和token
 # 编辑 backend/src/main/resources/application.yml，修改数据库配置
 
 # 构建后端
@@ -234,8 +234,8 @@ python -m vllm.entrypoints.openai.api_server \
 
 #### 5. 访问系统
 
-- **前端页面**：http://your-domain.com 或 http://your-server-ip
-- **后端API**：http://your-domain.com/api
+- **前端页面**：http://xn--uist3gr45a2a0370ahjg.xn--viqt41cw7bz9i.icu 或 http://your-server-ip
+- **后端API**：http://xn--uist3gr45a2a0370ahjg.xn--viqt41cw7bz9i.icu/api
 - **FRP管理**：http://your-server-ip:7500
 
 ### 初始化数据库

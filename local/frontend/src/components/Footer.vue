@@ -3,15 +3,23 @@
     <div class="container">
       <div class="footer-content">
         <div class="copyright">
-          <p>&copy; 2024 个人博客系统. All Rights Reserved.</p>
+          <p>&copy; 2025 个人博客系统. All Rights Reserved.</p>
           <p class="tech-stack">
             Powered by <strong>Spring Boot</strong> & <strong>Vue.js</strong>
           </p>
+          <p class="contact">
+            作者: Jeff | 邮箱: 71285903004@stu.ecnu.edu.cn
+          </p>
         </div>
         <div class="footer-links">
-          <a href="https://github.com" target="_blank" rel="noopener">
+          <a href="mailto:71285903004@stu.ecnu.edu.cn">
+            <el-icon><Message /></el-icon>
+            联系我
+          </a>
+          <span class="divider">|</span>
+          <a href="https://xn--uist3gr45a2a0370ahjg.xn--viqt41cw7bz9i.icu" target="_blank" rel="noopener">
             <el-icon><Link /></el-icon>
-            GitHub
+            网站首页
           </a>
           <span class="divider">|</span>
           <span class="status" :class="{ online: isOnline }">
@@ -26,6 +34,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { Link, Message, CircleCheck, CircleClose } from '@element-plus/icons-vue'
 
 const isOnline = ref(true)
 
@@ -66,6 +75,12 @@ onMounted(() => {
 }
 
 .tech-stack {
+  font-size: 12px;
+  color: #999;
+  margin-top: 5px !important;
+}
+
+.contact {
   font-size: 12px;
   color: #999;
   margin-top: 5px !important;
