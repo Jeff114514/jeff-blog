@@ -6,7 +6,7 @@ version: '3.8'
 services:
   # FRP服务端
   frps:
-    image: fatedier/frps:latest
+    image: snowdreamtech/frps:latest
     container_name: frps
     restart: always
     ports:
