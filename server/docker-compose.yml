@@ -6,7 +6,7 @@ version: '3.8'
 services:
   # FRP服务端
   frps:
-    image: snowdreamtech/frps:latest
+    image: fatedier/frps:latest
     container_name: frps
     restart: always
     ports:
@@ -15,11 +15,11 @@ services:
       - "8080:8080"      # HTTP代理端口
       - "8443:8443"      # HTTPS代理端口
     volumes:
-      - ./frp/frps.yml:/etc/frp/frps.yml
+      - ./frp/frps.yaml:/etc/frp/frps.yaml
       - frps-logs:/var/log/frp
     networks:
       - blog-network
-    command: -c /etc/frp/frps.yml
+    command: -c /etc/frp/frps.yaml
 
   # Nginx反向代理
   nginx:

@@ -1,41 +1,30 @@
-# FRP 服务端配置文件
-# 运行在阿里云服务器上
-
-# 基础绑定
 bindAddr: 0.0.0.0
 bindPort: 7000
 
-# 认证配置
 auth:
   method: token
   token: "Wsygb!23"
 
-# 日志配置
 log:
   to: "/var/log/frp/frps.log"
   level: info
   maxDays: 3
   disablePrintColor: false
 
-# 管理界面（原 dashboard）
 webServer:
   addr: 0.0.0.0
   port: 7500
   user: "admin"
   password: "admin123"
 
-# 传输层配置
 transport:
   tcpMux: true
 
-# HTTP/HTTPS 端口（用于 vhost 代理）
 vhostHTTPPort: 8080
 vhostHTTPSPort: 8443
 
-# 子域名配置
 subdomainHost: "xn--uist3gr45a2a0370ahjg.xn--viqt41cw7bz9i.icu"
 
-# 端口白名单（允许被映射的端口范围/单端口）
 allowPorts:
   - start: 2000
     end: 3000
