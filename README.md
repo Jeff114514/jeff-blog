@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Logo](https://img.shields.io/badge/Blog-System-blue?style=for-the-badge)
+![Logo](https://img.shields.io/badge/Blog-System-blue?style=flat-square)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-2.7.14-brightgreen?style=flat-square&logo=spring-boot)
 ![Vue](https://img.shields.io/badge/Vue-3.3.4-brightgreen?style=flat-square&logo=vue.js)
 ![MySQL](https://img.shields.io/badge/MySQL-8.0-blue?style=flat-square&logo=mysql)
