@@ -1,7 +1,7 @@
 # 前端Dockerfile - 多阶段构建
 
 # 第一阶段：构建
-FROM node:18-alpine AS build
+FROM node:22-alpine AS build
 
 # 设置工作目录
 WORKDIR /app
@@ -9,8 +9,12 @@ WORKDIR /app
 # 复制package文件
 COPY package*.json ./
 
-# 安装依赖
-RUN npm install
+# 设置npm国内镜像源并安装依赖
+RUN npm config set registry https://registry.npmmirror.com && \
+    npm config set electron_mirror https://npmmirror.com/mirrors/electron/ && \
+    npm config set electron_builder_binaries_mirror https://npmmirror.com/mirrors/electron-builder-binaries/ && \
+    npm config set sass_binary_site https://npmmirror.com/mirrors/node-sass/ && \
+    npm install
 
 # 复制源代码
 COPY . .
@@ -19,7 +23,7 @@ COPY . .
 RUN npm run build
 
 # 第二阶段：生产环境
-FROM nginx:alpine
+FROM nginx:stable-alpine
 
 # 复制构建产物到nginx
 COPY --from=build /app/dist /usr/share/nginx/html

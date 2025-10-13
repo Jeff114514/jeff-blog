@@ -35,7 +35,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/blog_db?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: blog123456
-      AI_LOCAL_MODEL_URL: http://host.docker.internal:11434/api/generate
+      AI_LOCAL_MODEL_URL: http://vllm:8000/v1/chat/completions
     ports:
       - "8080:8080"
     networks:
@@ -65,7 +65,7 @@ services:
     environment:
       - MODEL_NAME=Qwen3-4B-I-chat
       - MAX_MODEL_LEN=4096
-      - GPU_MEMORY_UTILIZATION=0.8
+      - GPU_MEMORY_UTILIZATION=0.85
     volumes:
       - D:/code/llm/wyh/llm/Qwen3/Qwen3-4B-I-chat:/models/Qwen3-4B-I-chat:ro
       - vllm-cache:/root/.cache
@@ -81,7 +81,7 @@ services:
       --tensor-parallel-size 1
       --trust-remote-code
       --tokenizer /models/Qwen3-4B-I-chat
-      --config /config/vllm_config.json
+      
     deploy:
       resources:
         reservations:
