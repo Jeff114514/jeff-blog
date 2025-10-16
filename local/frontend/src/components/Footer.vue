@@ -17,7 +17,7 @@
             联系我
           </a>
           <span class="divider">|</span>
-          <a href="https://xn--uist3gr45a2a0370ahjg.xn--viqt41cw7bz9i.icu" target="_blank" rel="noopener">
+          <a href="https://xn--viqt41cw7bz9i.icu" target="_blank" rel="noopener">
             <el-icon><Link /></el-icon>
             网站首页
           </a>
