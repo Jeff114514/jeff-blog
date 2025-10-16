@@ -30,7 +30,7 @@ proxies:
     type: tcp
     localIP: "127.0.0.1"
     localPort: 8080
-    remotePort: 8080
+    remotePort: 8800
 
   # 代理Vue前端服务
   - name: "blog-frontend"

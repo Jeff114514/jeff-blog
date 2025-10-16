@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.net.URI;
 
 /**
  * AI对话控制器（vLLM）
@@ -111,11 +112,9 @@ public class AIController {
     @GetMapping("/status")
     public Result<?> checkStatus() {
         try {
-            // 检查vLLM服务健康状态
-            ResponseEntity<String> response = restTemplate.getForEntity(
-                "http://localhost:8000/health",
-                String.class
-            );
+            // 检查vLLM服务健康状态（从配置的vllmUrl推导基础地址）
+            String baseUrl = getVllmBaseUrl();
+            ResponseEntity<String> response = restTemplate.getForEntity(baseUrl + "/health", String.class);
 
             if (response.getStatusCode() == HttpStatus.OK) {
                 return Result.success("vLLM服务正常运行");
@@ -133,10 +132,8 @@ public class AIController {
     @GetMapping("/models")
     public Result<?> getModels() {
         try {
-            ResponseEntity<Map> response = restTemplate.getForEntity(
-                "http://localhost:8000/v1/models",
-                Map.class
-            );
+            String baseUrl = getVllmBaseUrl();
+            ResponseEntity<Map> response = restTemplate.getForEntity(baseUrl + "/v1/models", Map.class);
 
             if (response.getStatusCode() == HttpStatus.OK) {
                 Map<String, Object> result = response.getBody();
@@ -146,6 +143,30 @@ public class AIController {
             }
         } catch (Exception e) {
             return Result.error("无法获取模型列表: " + e.getMessage());
+        }
+    }
+
+    /**
+     * 从配置的 vllmUrl 推导出基础地址（协议 + 主机 + 端口）。
+     * 例如：
+     *  - http://vllm:8000/v1/chat/completions -> http://vllm:8000
+     *  - http://localhost:8000/v1/chat/completions -> http://localhost:8000
+     */
+    private String getVllmBaseUrl() {
+        try {
+            URI uri = URI.create(vllmUrl);
+            String scheme = uri.getScheme();
+            String host = uri.getHost();
+            int port = uri.getPort();
+            if (scheme == null || host == null) {
+                // 回退：按 /v1/ 截断
+                int idx = vllmUrl.indexOf("/v1/");
+                return idx > 0 ? vllmUrl.substring(0, idx) : vllmUrl;
+            }
+            return scheme + "://" + host + (port > -1 ? ":" + port : "");
+        } catch (Exception ex) {
+            int idx = vllmUrl.indexOf("/v1/");
+            return idx > 0 ? vllmUrl.substring(0, idx) : vllmUrl;
         }
     }
 }
