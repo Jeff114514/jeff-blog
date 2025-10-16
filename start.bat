@@ -1,11 +1,14 @@
 @echo off
+chcp 65001 >nul
 REM Personal Blog System Startup Script (Windows Version)
 REM Using local Qwen model with vLLM deployment
 
 echo Starting Personal Blog System (Using Local Qwen Model)
 echo ======================================================
 
-echo need to mvn clean package -DskipTests and npm install first
+echo Please run: mvn clean package -DskipTests
+echo And: npm install
+echo Before starting the services
 
 REM Check if model files exist
 set "MODEL_PATH=D:\code\llm\wyh\llm\Qwen3\Qwen3-4B-I-chat"
@@ -97,7 +100,7 @@ echo Service Status:
 docker-compose ps
 
 echo.
-echo 🎉 All services started successfully!
+echo All services started successfully!
 
 echo.
 echo Service Access URLs:

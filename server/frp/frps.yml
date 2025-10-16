@@ -1,5 +1,5 @@
 bindAddr: 0.0.0.0
-bindPort: 7000
+bindPort: ${FRP_BIND_PORT:-7000}
 
 auth:
   method: token
@@ -13,9 +13,9 @@ log:
 
 webServer:
   addr: 0.0.0.0
-  port: 7500
-  user: "admin"
-  password: "admin123"
+  port: ${FRP_DASHBOARD_PORT:-7500}
+  user: "${FRP_DASHBOARD_USER:-admin}"
+  password: "${FRP_DASHBOARD_PASSWORD:-admin123}"
 
 transport:
   tcpMux: true

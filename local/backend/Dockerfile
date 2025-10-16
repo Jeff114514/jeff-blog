@@ -1,7 +1,7 @@
 # 后端Dockerfile - 临时解决方案
 # 注意：需要手动构建后端项目并将jar文件放入target目录
 
-FROM swr.cn-north-1.myhuaweicloud.com/library/openjdk:21-jre-slim
+FROM openjdk:21-jdk-slim
 
 # 设置工作目录
 WORKDIR /app

@@ -65,6 +65,17 @@ if not exist "%FRP_CONFIG%" (
 
 echo ✅ 配置文件检查通过
 
+REM 加载环境变量
+if exist ".env" (
+    echo 📄 加载环境变量配置...
+    for /f "tokens=*" %%i in (.env) do (
+        set "%%i"
+    )
+    echo ✅ 环境变量加载完成
+) else (
+    echo 📄 未找到.env文件，将使用默认配置
+)
+
 REM 检查防火墙状态
 echo 🔥 检查防火墙状态...
 netsh advfirewall show allprofiles state | findstr /C:"启用" >nul
@@ -139,7 +150,13 @@ if errorlevel 1 (
 echo.
 echo 🔌 端口开放检查：
 echo =================
-set "PORTS=80 443 7000 7500"
+REM 从环境变量读取端口配置，如果没有设置则使用默认值
+if "%NGINX_HTTP_PORT%"=="" set "NGINX_HTTP_PORT=80"
+if "%NGINX_HTTPS_PORT%"=="" set "NGINX_HTTPS_PORT=443"
+if "%FRP_BIND_PORT%"=="" set "FRP_BIND_PORT=7000"
+if "%FRP_DASHBOARD_PORT%"=="" set "FRP_DASHBOARD_PORT=7500"
+
+set "PORTS=%NGINX_HTTP_PORT% %NGINX_HTTPS_PORT% %FRP_BIND_PORT% %FRP_DASHBOARD_PORT%"
 for %%p in (%PORTS%) do (
     netstat -an | findstr ":%%p " >nul
     if errorlevel 1 (

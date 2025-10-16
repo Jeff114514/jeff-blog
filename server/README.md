@@ -95,41 +95,57 @@ docker-compose --version
 
 ### 2. 配置防火墙
 
+根据 `.env` 文件中的端口配置开放防火墙：
+
 ```bash
 # Ubuntu/Debian (UFW)
-sudo ufw allow 80/tcp
-sudo ufw allow 443/tcp
-sudo ufw allow 7000/tcp
-sudo ufw allow 7500/tcp
+sudo ufw allow ${NGINX_HTTP_PORT:-80}/tcp
+sudo ufw allow ${NGINX_HTTPS_PORT:-443}/tcp
+sudo ufw allow ${FRP_BIND_PORT:-7000}/tcp
+sudo ufw allow ${FRP_DASHBOARD_PORT:-7500}/tcp
 sudo ufw enable
 
 # CentOS (firewalld)
-sudo firewall-cmd --permanent --add-port=80/tcp
-sudo firewall-cmd --permanent --add-port=443/tcp
-sudo firewall-cmd --permanent --add-port=7000/tcp
-sudo firewall-cmd --permanent --add-port=7500/tcp
+sudo firewall-cmd --permanent --add-port=${NGINX_HTTP_PORT:-80}/tcp
+sudo firewall-cmd --permanent --add-port=${NGINX_HTTPS_PORT:-443}/tcp
+sudo firewall-cmd --permanent --add-port=${FRP_BIND_PORT:-7000}/tcp
+sudo firewall-cmd --permanent --add-port=${FRP_DASHBOARD_PORT:-7500}/tcp
 sudo firewall-cmd --reload
 ```
 
-### 3. 修改配置文件
+### 3. 配置环境变量
 
-编辑 `frp/frps.yml`：
-```yaml
-# 修改认证令牌（重要！）
-token = "your_secure_token_here"
+创建并编辑 `.env` 文件：
+```bash
+# 复制模板文件
+cp .env.example .env
 
-# 修改管理界面密码
-dashboard_user = "admin"
-dashboard_pwd = "admin123"
-
-# 修改域名（可选）
-subdomain_host = "xn--uist3gr45a2a0370ahjg.xn--viqt41cw7bz9i.icu"
+# 编辑配置文件
+vim .env
 ```
+
+主要配置项：
+```bash
+# FRP服务端配置
+FRP_BIND_PORT=7000                    # FRP服务端口
+FRP_DASHBOARD_PORT=7500              # 管理界面端口
+FRP_TOKEN=your_secure_token_here     # 认证令牌（重要！）
+FRP_DASHBOARD_USER=admin             # 管理界面用户名
+FRP_DASHBOARD_PASSWORD=admin123      # 管理界面密码（重要！）
+
+# 域名配置（可选）
+SERVER_DOMAIN=your-domain.com        # 您的域名
+FRP_SUBDOMAIN_HOST=xn--uist3gr45a2a0370ahjg.xn--viqt41cw7bz9i.icu
+```
+
+**安全提醒**：
+- `FRP_TOKEN` 应至少16位，包含数字、字母、特殊字符
+- `FRP_DASHBOARD_PASSWORD` 应至少12位，使用强密码
 
 编辑 `nginx/blog.conf`：
 ```nginx
-# 修改域名
-server_name xn--uist3gr45a2a0370ahjg.xn--viqt41cw7bz9i.icu;
+# 修改域名（可选，如果使用了自定义域名）
+server_name ${SERVER_DOMAIN:-xn--uist3gr45a2a0370ahjg.xn--viqt41cw7bz9i.icu};
 ```
 
 ### 4. 启动服务
@@ -220,23 +236,23 @@ docker-compose up -d
 
 ### FRP配置详解
 
-`frp/frps.yml` 主要配置项：
+`frp/frps.yml` 主要配置项（从环境变量读取）：
 ```yaml
-# FRP服务端监听端口
-bind_port = 7000
+# FRP服务端监听端口（从FRP_BIND_PORT读取）
+bind_port = ${FRP_BIND_PORT:-7000}
 
-# 管理界面端口
-dashboard_port = 7500
+# 管理界面端口（从FRP_DASHBOARD_PORT读取）
+dashboard_port = ${FRP_DASHBOARD_PORT:-7500}
 
-# 认证令牌（客户端必须一致）
-token = "your_secure_token"
+# 认证令牌（从FRP_TOKEN读取）
+token = "${FRP_TOKEN:-Wsygb!23}"
 
-# 管理界面认证
-dashboard_user = "admin"
-dashboard_pwd = "admin123"
+# 管理界面认证（从环境变量读取）
+dashboard_user = "${FRP_DASHBOARD_USER:-admin}"
+dashboard_pwd = "${FRP_DASHBOARD_PASSWORD:-admin123}"
 
-# 域名（用于子域名代理）
-subdomain_host = "xn--uist3gr45a2a0370ahjg.xn--viqt41cw7bz9i.icu"
+# 域名（从FRP_SUBDOMAIN_HOST读取）
+subdomain_host = "${FRP_SUBDOMAIN_HOST:-xn--uist3gr45a2a0370ahjg.xn--viqt41cw7bz9i.icu}"
 ```
 
 ### Nginx配置详解

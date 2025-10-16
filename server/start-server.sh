@@ -63,6 +63,13 @@ if [ -z "$SERVER_IP" ]; then
     SERVER_IP="your-server-ip"
 fi
 
+# 加载环境变量
+if [ -f ".env" ]; then
+    echo "📄 加载环境变量配置..."
+    source .env
+    echo "✅ 环境变量加载完成"
+fi
+
 # 检查防火墙状态
 if command -v ufw &> /dev/null; then
     echo "🔥 检查防火墙状态..."
@@ -150,7 +157,13 @@ fi
 echo ""
 echo "🔌 端口开放检查："
 echo "================="
-PORTS=("80" "443" "7000" "7500")
+# 从环境变量读取端口配置，如果没有设置则使用默认值
+HTTP_PORT="${NGINX_HTTP_PORT:-80}"
+HTTPS_PORT="${NGINX_HTTPS_PORT:-443}"
+FRP_PORT="${FRP_BIND_PORT:-7000}"
+DASHBOARD_PORT="${FRP_DASHBOARD_PORT:-7500}"
+
+PORTS=("$HTTP_PORT" "$HTTPS_PORT" "$FRP_PORT" "$DASHBOARD_PORT")
 for port in "${PORTS[@]}"; do
     if netstat -tuln 2>/dev/null | grep -q ":$port " || ss -tuln 2>/dev/null | grep -q ":$port "; then
         echo "✅ 端口$port已开放"

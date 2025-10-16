@@ -210,13 +210,18 @@ Content-Type: application/json
 # 构建镜像
 docker build -t blog-backend:1.0.0 .
 
-# 运行容器
+# 运行容器（推荐使用环境变量）
 docker run -d -p 8080:8080 \
   -e SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/blog_db \
   -e SPRING_DATASOURCE_USERNAME=root \
-  -e SPRING_DATASOURCE_PASSWORD=password \
+  -e SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-your_db_password} \
   --name blog-backend \
   blog-backend:1.0.0
+
+# 或者使用外部环境变量文件
+# docker run -d -p 8080:8080 --env-file ../.env \
+#   --name blog-backend \
+#   blog-backend:1.0.0
 ```
 
 ## 开发说明

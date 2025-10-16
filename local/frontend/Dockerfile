@@ -11,9 +11,6 @@ COPY package*.json ./
 
 # 设置npm国内镜像源并安装依赖
 RUN npm config set registry https://registry.npmmirror.com && \
-    npm config set electron_mirror https://npmmirror.com/mirrors/electron/ && \
-    npm config set electron_builder_binaries_mirror https://npmmirror.com/mirrors/electron-builder-binaries/ && \
-    npm config set sass_binary_site https://npmmirror.com/mirrors/node-sass/ && \
     npm install
 
 # 复制源代码
